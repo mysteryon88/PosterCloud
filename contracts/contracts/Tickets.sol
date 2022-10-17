@@ -8,14 +8,15 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract Tickets is ERC721, ERC721Burnable, Ownable {
-
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
 
     address public posterAddress;
 
-    constructor(string memory eventName, string memory abbreviation) ERC721(eventName, abbreviation) {
+    constructor(string memory eventName, string memory abbreviation)
+        ERC721(eventName, abbreviation)
+    {
         posterAddress = msg.sender;
     }
 
