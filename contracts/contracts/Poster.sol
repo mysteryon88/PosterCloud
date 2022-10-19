@@ -15,15 +15,26 @@ contract Poster {
     }
 
     struct Organizer {
-        string organizerName;
+        address organizerAddr;
         mapping(string => Event) events; //event title - Event
     }
 
-    mapping(address => Organizer) public organizers;
+    string[] organizersName;
 
-    function registration(string memory name) external payable {
+    mapping(address => string) public orgAddrToName; // addr - name
+
+    mapping(string => Organizer) public organizers; //name - Organizer
+
+    receive() external payable {}
+
+    fallback() external payable {}
+
+    function registration(string memory orgName) external payable {
         //require(msg.value < 10000000000000000 , "It is necessary to make a contribution of 0.01 Ether");
-        organizers[msg.sender].organizerName = name;
+        //organizers[msg.sender].organizerName = name;
+        organizers[orgName].organizerAddr = msg.sender;
+        orgAddrToName[msg.sender] = orgName;
+        organizersName.push(orgName);
     }
 
     function createEvent(
@@ -33,33 +44,23 @@ contract Poster {
         uint totalTickets
     ) external {
         Tickets tickets = new Tickets(eventName, abbreviation);
+        string memory name = orgAddrToName[msg.sender];
+        Event memory _event = organizers[name].events[eventName];
         //address _tickets = address(tickets);
-        organizers[msg.sender].events[eventName].price = price;
-        organizers[msg.sender].events[eventName].totalTickets = totalTickets;
-        organizers[msg.sender].events[eventName].tickets = address(tickets);
+        _event.price = price;
+        _event.totalTickets = totalTickets;
+        _event.tickets = address(tickets);
     }
 
     function buyTicket(
-        address organizer,
+        string memory organizer,
         string memory eventName /*, uint count*/
     ) external payable {
-        require(
-            msg.value == organizers[organizer].events[eventName].price,
-            "Need the correct amount"
-        );
-        require(
-            organizers[msg.sender].events[eventName].numberTickets ==
-                organizers[msg.sender].events[eventName].totalTickets,
-            "Sold out!"
-        );
-        ITicket ticket = ITicket(
-            organizers[organizer].events[eventName].tickets
-        );
-        ticket.safeMint(msg.sender, "URI");
-        organizers[msg.sender].events[eventName].numberTickets++;
+        Event memory _event = organizers[organizer].events[eventName];
+        require(msg.value == _event.price, "Need the correct amount");
+        require(_event.numberTickets == _event.totalTickets, "Sold out!");
+        ITicket ticket = ITicket(_event.tickets);
+        ticket.safeMint(msg.sender, _event.URI);
+        _event.numberTickets++;
     }
-
-    receive() external payable {}
-
-    fallback() external payable {}
 }

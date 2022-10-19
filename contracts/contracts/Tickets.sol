@@ -10,6 +10,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 interface ITicket {
     function safeMint(address to, string memory uri) external;
+    function burnTicket(uint256 tokenId) external;
 }
 
 contract Tickets is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
@@ -32,7 +33,9 @@ contract Tickets is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         _setTokenURI(tokenId, uri);
     }
 
-    // The following functions are overrides required by Solidity.
+    function burnTicket(uint256 tokenId) public onlyOwner {
+        _burn(tokenId);
+    }
 
     function _burn(uint256 tokenId)
         internal
