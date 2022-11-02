@@ -9,7 +9,6 @@ contract Poster {
         string description;
         string uri;
         uint price;
-        uint numberTickets;
         uint totalTickets;
         address tickets;
         uint date;
@@ -73,20 +72,20 @@ contract Poster {
         organizers[name].events[eventName] = _event;
     }
 
-    function buyTicket(
+    function buyTickets(
         string memory organizer,
         string memory eventName,
         uint count
     ) external payable {
         Event memory _event = organizers[organizer].events[eventName];
 
-        require((msg.value * count) == _event.price, "Need the correct amount");
-        require(_event.numberTickets == _event.totalTickets, "Sold out!");
+        require(msg.value == (_event.price * count), "Need the correct amount");
+        require(_event.totalTickets != 0, "Sold out!");
         ITicket ticket = ITicket(_event.tickets);
         //mint tickets
         for (uint8 i = 0; i < count; ++i) {
             ticket.safeMint(msg.sender, _event.uri);
-            _event.numberTickets++;
+            _event.totalTickets--;
         }
         organizers[organizer].events[eventName] = _event;
     }
@@ -97,14 +96,6 @@ contract Poster {
         returns (Event memory)
     {
         return organizers[organizer].events[eventName];
-    }
-
-    function getTickets(string memory organizer, string memory eventName)
-        public
-        view
-        returns (address)
-    {
-        return organizers[organizer].events[eventName].tickets;
     }
 
     modifier onlyOrganizers() {

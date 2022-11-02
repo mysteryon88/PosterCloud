@@ -1,5 +1,6 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
+const abi  = require( './abi.json') ;
 
 describe("Poster", function () {
   let owner, name1, name2, client1, client2, poster
@@ -39,7 +40,7 @@ describe("Poster", function () {
     expect(event[0]).to.eq("description")
     expect(event[1]).to.eq("uri")
 
-    expect(event[5]).to.be.properAddress
+    expect(event[4]).to.be.properAddress //ticket address
   })
 
   it("modifier onlyOrganizers", async function () {
@@ -47,7 +48,21 @@ describe("Poster", function () {
     await expect(poster.connect(client1)
       .createEvent("eventName", "ENA", "uri", "description", 100, 100, 23432))
       .to.be.revertedWith("You are not registered as an organizer");
-      
+
   })
 
+  it("function buyTickets", async function () {
+
+    await poster.connect(client1).buyTickets("Name #1", "eventName", 2, { value: 200 })
+
+    const event = await poster.getEvent("Name #1", "eventName")
+    expect(event[3]).to.eq(98) //number of tickets
+
+    const tickets = new ethers.Contract(event[4], abi, owner);
+
+    expect(await tickets.balanceOf(client1.address)).to.eq(2)
+    expect(await tickets.name()).to.eq("eventName")
+    expect(await tickets.symbol()).to.eq("ENA")
+  })
 });
+

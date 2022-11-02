@@ -3,7 +3,8 @@
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^1.0.2",
     "@openzeppelin/contracts": "^4.7.3",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "esm": "^3.2.25"
   },
   "license": "MIT"
 }
