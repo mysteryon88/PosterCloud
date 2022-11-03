@@ -2,6 +2,7 @@
 
 pragma solidity ^0.8.17;
 
+//import "./Tickets/Tickets.sol";
 import "./Tickets.sol";
 
 contract Poster {
@@ -81,7 +82,7 @@ contract Poster {
 
         require(msg.value == (_event.price * count), "Need the correct amount");
         require(_event.totalTickets != 0, "Sold out!");
-        ITicket ticket = ITicket(_event.tickets);
+        ITickets ticket = ITickets(_event.tickets);
         //mint tickets
         for (uint8 i = 0; i < count; ++i) {
             ticket.safeMint(msg.sender, _event.uri);

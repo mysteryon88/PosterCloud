@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-interface ITicket {
+interface ITickets {
     function safeMint(address to, string memory uri) external;
     function burnTicket(uint256 tokenId) external;
 }
@@ -33,7 +33,7 @@ contract Tickets is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         _setTokenURI(tokenId, uri);
     }
 
-    function burnTicket(uint256 tokenId) public onlyOwner {
+    function burnTicket(uint256 tokenId) public {
         _burn(tokenId);
     }
 

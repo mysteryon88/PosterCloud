@@ -51,11 +51,12 @@ describe("Poster", function () {
 
   })
 
-  it("function buyTickets", async function () {
+  it("function buyTickets + burnTicket", async function () {
 
     await poster.connect(client1).buyTickets("Name #1", "eventName", 2, { value: 200 })
 
-    const event = await poster.getEvent("Name #1", "eventName")
+    let event = await poster.getEvent("Name #1", "eventName")
+
     expect(event[3]).to.eq(98) //number of tickets
 
     const tickets = new ethers.Contract(event[4], abi, owner);
@@ -63,6 +64,8 @@ describe("Poster", function () {
     expect(await tickets.balanceOf(client1.address)).to.eq(2)
     expect(await tickets.name()).to.eq("eventName")
     expect(await tickets.symbol()).to.eq("ENA")
+    
+    await tickets.burnTicket(0)
+    expect(await tickets.balanceOf(client1.address)).to.eq(1)
   })
 });
-
