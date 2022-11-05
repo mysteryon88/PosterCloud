@@ -20,11 +20,18 @@ contract Poster {
         mapping(string => Event) events; //event title - Event
     }
 
+    struct Clients {
+        string name;
+        address[] tickets;
+    }
+
     string[] public organizersName;
 
     mapping(address => string) public orgAddrToName; // addr - name
 
     mapping(string => Organizer) public organizers; //name - Organizer
+
+    mapping (address => Clients) clients; //clients - tickets
 
     event orgRegistered(string indexed orgName, address ordAddr);
 
@@ -53,13 +60,13 @@ contract Poster {
         string memory abbreviation,
         string memory uri,
         string memory description,
-        uint price,
-        uint totalTickets,
-        uint date
+        uint256 price,
+        uint256 totalTickets,
+        uint256 date
     ) external onlyOrganizers {
         string memory name = orgAddrToName[msg.sender];
 
-        Tickets tickets = new Tickets(eventName, abbreviation);
+        Tickets tickets = new Tickets(eventName, abbreviation, totalTickets);
 
         Event memory _event;
 
@@ -76,19 +83,32 @@ contract Poster {
     function buyTickets(
         string memory organizer,
         string memory eventName,
-        uint count
+        uint256 count
     ) external payable {
         Event memory _event = organizers[organizer].events[eventName];
 
         require(msg.value == (_event.price * count), "Need the correct amount");
-        require(_event.totalTickets != 0, "Sold out!");
         ITickets ticket = ITickets(_event.tickets);
+        
+        require(_event.totalTickets - count >= 0, "Choose fewer tickets");
+        
         //mint tickets
         for (uint8 i = 0; i < count; ++i) {
-            ticket.safeMint(msg.sender, _event.uri);
+            ticket.safeMintTicket(msg.sender, _event.uri);
             _event.totalTickets--;
         }
         organizers[organizer].events[eventName] = _event;
+    }
+
+    function ticketRefund(
+        string memory organizer,
+        string memory eventName,
+        uint256 ticketId
+    ) external payable {
+        Event memory _event = organizers[organizer].events[eventName];
+        payable(msg.sender).transfer(_event.price);
+        ITickets ticket = ITickets(_event.tickets);
+        ticket.burnTicket(ticketId);
     }
 
     function getEvent(string memory organizer, string memory eventName)

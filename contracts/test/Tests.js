@@ -61,11 +61,22 @@ describe("Poster", function () {
 
     const tickets = new ethers.Contract(event[4], abi, owner);
 
-    expect(await tickets.balanceOf(client1.address)).to.eq(2)
     expect(await tickets.name()).to.eq("eventName")
     expect(await tickets.symbol()).to.eq("ENA")
-    
-    await tickets.burnTicket(0)
+
+    expect(await tickets.balanceOf(client1.address)).to.eq(2)
+    expect(await tickets.ownerOf(1)).to.eq(client1.address)
+
+    //await poster.connect(client2).buyTickets("Name #1", "eventName", 99, { value: 9900 })
+    /*
+    await tickets.connect(client1).burnTicket(0) 
     expect(await tickets.balanceOf(client1.address)).to.eq(1)
+
+    await expect(tickets.connect(owner).burnTicket(1)).to.be.revertedWith("You are not owner!")
+    await expect(tickets.connect(client2).burnTicket(1)).to.be.revertedWith("You are not owner!")
+
+    await tickets.connect(client1).burnTicket(1) 
+    expect(await tickets.balanceOf(client1.address)).to.eq(0)
+    */
   })
 });
