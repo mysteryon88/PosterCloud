@@ -6,11 +6,10 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 
 contract Tickets is ERC721, ERC721URIStorage, ERC721Burnable {
-    
     uint256 private ids;
     uint256 public total;
     address private owner;
-    mapping (uint256 => bool) verifier;
+    mapping(uint256 => bool) verifier;
 
     constructor(string memory name, uint256 _total) ERC721(name, "TIK") {
         owner = msg.sender;
@@ -24,12 +23,14 @@ contract Tickets is ERC721, ERC721URIStorage, ERC721Burnable {
 
     function safeMint(address to, string memory uri) public onlyOwner {
         uint256 tokenId = ids++;
-        require(total >= tokenId, "Sold out");
+        require(total > tokenId, "Sold out");
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
     }
 
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) onlyOwner {
+    function _burn(
+        uint256 tokenId
+    ) internal override(ERC721, ERC721URIStorage) onlyOwner {
         super._burn(tokenId);
     }
 
@@ -37,7 +38,9 @@ contract Tickets is ERC721, ERC721URIStorage, ERC721Burnable {
         _burn(tokenId);
     }
 
-    function tokenURI(uint256 tokenId)
+    function tokenURI(
+        uint256 tokenId
+    )
         public
         view
         override(ERC721, ERC721URIStorage)
@@ -46,5 +49,4 @@ contract Tickets is ERC721, ERC721URIStorage, ERC721Burnable {
     {
         return super.tokenURI(tokenId);
     }
-
 }

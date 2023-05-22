@@ -13,7 +13,7 @@ describe('PosterCloud', function () {
     return { posterCloud, owner, client1, timestamp }
   }
 
-  it('owner', async function () {
+  it('owner in storage', async function () {
     const { posterCloud, owner } = await loadFixture(deployPosterCloudFixture)
 
     expect(
@@ -25,6 +25,28 @@ describe('PosterCloud', function () {
     const { posterCloud } = await loadFixture(deployPosterCloudFixture)
 
     expect(await posterCloud.getEventsCount()).to.equal(0)
+  })
+
+  it('onlyOwner', async function () {
+    const { posterCloud, owner, client1, timestamp } = await loadFixture(
+      deployPosterCloudFixture
+    )
+
+    await expect(
+      posterCloud.connect(client1).addEvent('Name', timestamp, 'info', 100)
+    ).to.be.revertedWith('Caller is not owner')
+
+    expect(await posterCloud.getEventsCount()).to.equal(0)
+  })
+
+  it('validEventId', async function () {
+    const { posterCloud, owner, client1, timestamp } = await loadFixture(
+      deployPosterCloudFixture
+    )
+
+    await expect(posterCloud.deleteEvent(0)).to.be.revertedWith(
+      'Event ID out of range'
+    )
   })
 
   it('addEvent', async function () {
@@ -73,7 +95,7 @@ describe('PosterCloud', function () {
       deployPosterCloudFixture
     )
 
-    const nftAddress = await predictContractAddress(await posterCloud.address)
+    const nftAddress = await predictContractAddress(posterCloud.address)
     await expect(posterCloud.addEvent('Name', timestamp, 'info', 100)).to.emit(
       posterCloud,
       'EventCreated'
@@ -110,12 +132,49 @@ describe('PosterCloud', function () {
       'EventCreated'
     )
 
+    await expect(posterCloud.addEvent('Name', timestamp, 'info', 100)).to.emit(
+      posterCloud,
+      'EventCreated'
+    )
+
     await expect(posterCloud.deleteEvent(0)).to.emit(
       posterCloud,
       'EventDeleted'
     )
 
-    expect(await posterCloud.getEventsCount()).to.equal(0)
+    expect(await posterCloud.getEventsCount()).to.equal(1)
+  })
+
+  it('mintTicket', async function () {
+    const { posterCloud, owner, client1, timestamp } = await loadFixture(
+      deployPosterCloudFixture
+    )
+
+    await expect(posterCloud.addEvent('Name', timestamp, 'info', 100)).to.emit(
+      posterCloud,
+      'EventCreated'
+    )
+
+    await posterCloud.mintTicket(0, 'uri', client1.address)
+
+    expect(await posterCloud.getEventsCount()).to.equal(1)
+  })
+
+  it('Sold out', async function () {
+    const { posterCloud, owner, client1, timestamp } = await loadFixture(
+      deployPosterCloudFixture
+    )
+
+    await expect(posterCloud.addEvent('Name', timestamp, 'info', 1)).to.emit(
+      posterCloud,
+      'EventCreated'
+    )
+
+    await posterCloud.mintTicket(0, 'uri', client1.address)
+
+    await expect(
+      posterCloud.mintTicket(0, 'uri', client1.address)
+    ).to.be.revertedWith('Sold out')
   })
 })
 
