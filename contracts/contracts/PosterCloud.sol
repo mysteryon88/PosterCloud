@@ -17,16 +17,11 @@ contract PosterCloud {
     event EventCreated(
         uint256 indexed eventId,
         string indexed name,
-        uint256 indexed timestamp,
-        string info,
         address nftAddress,
         uint256 blockTimestamp
     );
     event EventEdited(
         uint256 indexed eventId,
-        string indexed name,
-        uint256 indexed timestamp,
-        string info,
         uint256 blockTimestamp
     );
     event EventDeleted(uint256 indexed eventId, uint256 blockTimestamp);
@@ -57,8 +52,6 @@ contract PosterCloud {
         emit EventCreated(
             events.length - 1,
             _name,
-            _timestamp,
-            _info,
             address(nftAddress),
             block.timestamp
         );
@@ -75,7 +68,7 @@ contract PosterCloud {
         eventToEdit.timestamp = _timestamp;
         eventToEdit.info = _info;
 
-        emit EventEdited(_eventId, _name, _timestamp, _info, block.timestamp);
+        emit EventEdited(_eventId, block.timestamp);
     }
 
     function deleteEvent(
