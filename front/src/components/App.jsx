@@ -2,7 +2,7 @@ import React from 'react'
 import {
   ChakraProvider,
   Box,
-  Text,
+  Flex,
   Link,
   VStack,
   Code,
@@ -20,20 +20,26 @@ import {
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import Navbar from './navbar/Navbar'
-import Registration from './registration/Registration'
+import AddEvent from './addEvent/AddEvent'
 import Footer from './footer/Footer'
 
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <BrowserRouter>
-        <Navbar />
+      <Flex direction='column' minH='100vh'>
+        <BrowserRouter>
+          <Box flex='1'>
+            <Navbar />
 
-        <Routes>
-          <Route path='/registration' element={<Registration />} />
-        </Routes>
-        <Footer />
-      </BrowserRouter>
+            <Routes>
+              <Route path='/addevent' element={<AddEvent />} />
+            </Routes>
+          </Box>
+          <Box>
+            <Footer />
+          </Box>
+        </BrowserRouter>
+      </Flex>
     </ChakraProvider>
   )
 }

@@ -1,5 +1,5 @@
 const express = require('express')
-const authRouter = require('./routes/auth.routes')
+const router = require('./routes/routes')
 const corsMiddleware = require('./middleware/cors.middleware')
 
 require('dotenv').config()
@@ -7,7 +7,7 @@ require('dotenv').config()
 const app = express()
 app.use(corsMiddleware)
 app.use(express.json())
-app.use('/api/auth', authRouter)
+app.use('/api', router)
 
 const start = () => {
   try {

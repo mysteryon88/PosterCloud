@@ -5,13 +5,15 @@ import {
   Spacer,
   IconButton,
   useColorMode,
+  useColorModeValue,
   Link,
-  Image,
 } from '@chakra-ui/react'
 import { SunIcon, MoonIcon } from '@chakra-ui/icons'
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode()
+
+  const iconColor = useColorModeValue('white', 'white')
 
   return (
     <Box bg='gray.800' py={4} px={8} width='100%'>
@@ -27,7 +29,7 @@ const Navbar = () => {
               color='white'
               _hover={{ textDecoration: 'none' }}
             >
-              Главная страница
+              Home
             </Link>
             <Link
               href='/about'
@@ -36,16 +38,16 @@ const Navbar = () => {
               color='white'
               _hover={{ textDecoration: 'none' }}
             >
-              Мероприятия
+              Events
             </Link>
             <Link
-              href='/contact'
+              href='/addevent'
               p={2}
               mx={2}
               color='white'
               _hover={{ textDecoration: 'none' }}
             >
-              Проверка билета
+              Add event
             </Link>
           </Flex>
         </Box>
@@ -58,6 +60,7 @@ const Navbar = () => {
             onClick={toggleColorMode}
             size='md'
             variant='ghost'
+            color={iconColor}
           />
         </Box>
       </Flex>
