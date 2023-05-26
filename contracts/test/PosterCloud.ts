@@ -1,6 +1,7 @@
 import { loadFixture } from '@nomicfoundation/hardhat-network-helpers'
 import { expect } from 'chai'
 import { ethers } from 'hardhat'
+const contractABI = require('./Tickets.json')
 
 describe('PosterCloud', function () {
   async function deployPosterCloudFixture() {
@@ -155,7 +156,46 @@ describe('PosterCloud', function () {
       'EventCreated'
     )
 
-    await posterCloud.mintTicket(0, 'uri', client1.address)
+    const contractAddress = await posterCloud.getTicketsFromEvent(0)
+
+    let Tickets = new ethers.Contract(
+      contractAddress,
+      contractABI,
+      ethers.provider
+    )
+
+    await expect(posterCloud.mintTicket(0, 'uri', client1.address)).to.emit(
+      Tickets,
+      'Transfer'
+    )
+
+    expect(await posterCloud.getEventsCount()).to.equal(1)
+  })
+
+  it('burnTicket', async function () {
+    const { posterCloud, owner, client1, timestamp } = await loadFixture(
+      deployPosterCloudFixture
+    )
+
+    await expect(posterCloud.addEvent('Name', timestamp, 'info', 100)).to.emit(
+      posterCloud,
+      'EventCreated'
+    )
+
+    const contractAddress = await posterCloud.getTicketsFromEvent(0)
+
+    let Tickets = new ethers.Contract(
+      contractAddress,
+      contractABI,
+      ethers.provider
+    )
+
+    await expect(posterCloud.mintTicket(0, 'uri', client1.address)).to.emit(
+      Tickets,
+      'Transfer'
+    )
+
+    await expect(posterCloud.burnTicket(0, 0)).to.emit(Tickets, 'Transfer')
 
     expect(await posterCloud.getEventsCount()).to.equal(1)
   })

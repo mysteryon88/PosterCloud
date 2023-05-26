@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 
 contract Tickets is ERC721, ERC721URIStorage, ERC721Burnable {
     uint256 private ids;
-    uint256 public total;
+    uint256 private total;
     address private owner;
     mapping(uint256 => bool) verifier;
 
@@ -36,6 +36,7 @@ contract Tickets is ERC721, ERC721URIStorage, ERC721Burnable {
 
     function burn(uint256 tokenId) public override onlyOwner {
         _burn(tokenId);
+        total++;
     }
 
     function tokenURI(

@@ -95,6 +95,17 @@ contract PosterCloud {
         return block.timestamp;
     }
 
+    function burnTicket(
+        uint256 _eventId,
+        uint256 _tockenId
+    ) public onlyOwner validEventId(_eventId) returns (uint256) {
+        Event storage eventToMint = events[_eventId];
+
+        Tickets(eventToMint.nftAddress).burn(_tockenId);
+
+        return block.timestamp;
+    }
+
     function getEventsCount() public view returns (uint256) {
         return events.length;
     }
@@ -114,5 +125,17 @@ contract PosterCloud {
             eventToGet.info,
             eventToGet.nftAddress
         );
+    }
+
+    function getTicketsFromEvent(
+        uint256 _eventId
+    )
+        public
+        view
+        validEventId(_eventId)
+        returns (address)
+    {
+        Event storage eventToGet = events[_eventId];
+        return eventToGet.nftAddress;
     }
 }

@@ -1,9 +1,10 @@
 import React from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { ethers } from 'ethers'
+import { Box, Button, Text } from '@chakra-ui/react'
 import { Web3Provider } from '@ethersproject/providers'
 
-export default function MyApp() {
+export default function ConnectWallet() {
   const [account, setAccount] = React.useState(null)
   const { chainId } = useWeb3React()
 
@@ -33,9 +34,9 @@ export default function MyApp() {
   }
 
   return (
-    <div>
-      <button onClick={connectToMetamask}>Connect to Metamask</button>
-      {account && <p>Connected with account: {account}</p>}
-    </div>
+    <Box>
+      <Button onClick={connectToMetamask}>Connect to MetaMask</Button>
+      {account && <Text>Connected with account: {account}</Text>}
+    </Box>
   )
 }

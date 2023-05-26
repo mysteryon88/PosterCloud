@@ -1,23 +1,6 @@
 import React from 'react'
-import {
-  ChakraProvider,
-  Box,
-  Flex,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-  Heading,
-  Container,
-  Button,
-  Stack,
-  Icon,
-  useColorModeValue,
-  createIcon,
-  HStack,
-} from '@chakra-ui/react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { ChakraProvider, Box, Flex, theme } from '@chakra-ui/react'
 
 import Navbar from './navbar/Navbar'
 import AddEvent from './addEvent/AddEvent'
@@ -30,7 +13,6 @@ function App() {
         <BrowserRouter>
           <Box flex='1'>
             <Navbar />
-
             <Routes>
               <Route path='/addevent' element={<AddEvent />} />
             </Routes>

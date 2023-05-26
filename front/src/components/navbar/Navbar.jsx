@@ -9,6 +9,7 @@ import {
   Link,
 } from '@chakra-ui/react'
 import { SunIcon, MoonIcon } from '@chakra-ui/icons'
+import ConnectWallet from '../wallet/ConnectWallet'
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -49,6 +50,7 @@ const Navbar = () => {
             >
               Add event
             </Link>
+            <ConnectWallet />
           </Flex>
         </Box>
 
