@@ -2,9 +2,11 @@ import { ethers } from 'ethers'
 import { useState, useEffect } from 'react'
 import { useEthereumContext } from '../ethereumContext/EthereumContext'
 import { Box, Heading, Text, Button } from '@chakra-ui/react'
-import contractABI from './PosterCloud.json'
+import PosterCloud from '../../abi/PosterCloud.json'
+import { handleBuyTicket } from '../../utils/actions'
+import Tickets from '../../abi/Tickets.json'
 
-const contractAddress = '0xB21176b92bFe0f81269094C2027ADF2487074d2e'
+const contractAddress = '0x2088A990D6A8c42A953F78bBd276d83775b61d5b'
 
 export default function DisplayEvents() {
   const { account, provider, signer } = useEthereumContext()
@@ -18,33 +20,22 @@ export default function DisplayEvents() {
 
   const fetchEvents = async () => {
     try {
-      const contract = new ethers.Contract(contractAddress, contractABI, signer)
+      const contract = new ethers.Contract(contractAddress, PosterCloud, signer)
 
       const eventsCount = await contract.getEventsCount()
 
-      /*const tx = await contract
-        .connect(signer)
-        .addEvent('name', Date.now(), 'info', 100)
-        */
-      //const event = await contract.getEvent()
-      //console.log(event)
       console.log(Number(eventsCount))
       const allEvents = []
       for (let i = 0; i < Number(eventsCount); i++) {
         console.log(i)
         const event = await contract.getEventInfo(i)
         allEvents.push(event)
-        //await contract.mintTicket(i, 'uri', account)
       }
 
       setEvents(allEvents)
     } catch (error) {
       console.log(error)
     }
-  }
-
-  const handleBuyTicket = async (eventId) => {
-    // Здесь вызывается функция на сервере для покупки билета
   }
 
   return (
@@ -58,12 +49,15 @@ export default function DisplayEvents() {
           p={4}
           mb={4}
         >
-          <Heading mb={2}>{event[0]}</Heading> {/* Название мероприятия */}
-          <Text mb={2}>{event[1]}</Text> {/* Дата или время мероприятия */}
-          <Text mb={2}>{event[2]}</Text> {/* Описание мероприятия */}
-          <Text mb={2}>{event[3]}</Text> {/* Адрес организатора */}
-          <Button colorScheme='blue' onClick={() => handleBuyTicket(index)}>
-            Купить билет
+          <Heading mb={2}>{event[0]}</Heading>
+          <Text mb={2}>{event[1]}</Text>
+          <Text mb={2}>{event[2]}</Text>
+          <Text mb={2}>{event[3]}</Text>
+          <Button
+            colorScheme='blue'
+            onClick={() => handleBuyTicket(index, account)}
+          >
+            To buy a ticket
           </Button>
         </Box>
       ))}

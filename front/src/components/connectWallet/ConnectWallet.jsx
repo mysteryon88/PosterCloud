@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Box, Button, Text } from '@chakra-ui/react'
 import { Web3Provider } from '@ethersproject/providers'
 import { useEthereumContext } from '../ethereumContext/EthereumContext'
@@ -8,6 +8,11 @@ export default function ConnectWallet() {
   const { account, setAccount, provider, setProvider, signer, setSigner } =
     useEthereumContext()
   const [connected, setConnected] = useState(false)
+  const [enable, setEnable] = useState(false)
+
+  useEffect(() => {
+    if (!connected && enable) connectToMetamask()
+  }, [connected])
 
   const connectToMetamask = async () => {
     if (!window.ethereum) {
@@ -28,10 +33,11 @@ export default function ConnectWallet() {
       const newSigner = newProvider.getSigner()
       setSigner(newSigner)
 
-      if (window.ethereum.enable()) window.alert('Successful connection')
+      //if (window.ethereum.enable()) window.alert('Successful connection')
 
       setAccount(accounts[0])
       setConnected(true)
+      setEnable(true)
     } catch (error) {
       window.alert('User denied account access.')
       console.log(error)
@@ -42,6 +48,7 @@ export default function ConnectWallet() {
     setProvider(null)
     setSigner(null)
     setConnected(false)
+    setEnable(false)
   }
 
   return (

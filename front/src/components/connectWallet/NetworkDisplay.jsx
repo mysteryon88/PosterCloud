@@ -41,7 +41,7 @@ const NetworkDisplay = () => {
     getNetwork()
   }, [])
 
-  return <div>Check the console to see the current network</div>
+  return <div></div>
 }
 
 export default NetworkDisplay
