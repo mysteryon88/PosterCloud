@@ -64,4 +64,37 @@ router.post('/buytik', async (req, res) => {
   }
 })
 
+router.post('/check', async (req, res) => {
+  try {
+    const provider = new ethers.JsonRpcProvider(process.env.URL)
+    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider)
+
+    const contract = new ethers.Contract(
+      process.env.ADDRESS,
+      contractABI,
+      provider
+    )
+
+    const { eventId, ticketId } = req.body
+    console.log(eventId, ticketId)
+
+    try {
+      const tx = await contract.connect(wallet).checkTicket(eventId, ticketId)
+
+      console.log('Transaction was successful:', tx)
+
+      if (tx === false) {
+        res.json({ message: 'ticket verified' })
+        const tx1 = await contract.connect(wallet).setTicket(eventId, ticketId)
+        console.log('Transaction was successful:', tx1)
+      } else res.json({ message: 'ticket already used' })
+    } catch (error) {
+      console.log('Error:', error)
+    }
+  } catch (e) {
+    console.log(e)
+    res.send({ message: 'Server error' })
+  }
+})
+
 module.exports = router

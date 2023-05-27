@@ -1,15 +1,12 @@
-import { ethers } from 'ethers'
-import { useState, useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ChakraProvider, Box, Flex, theme } from '@chakra-ui/react'
-import { Web3Provider } from '@ethersproject/providers'
-import { useWeb3React } from '@web3-react/core'
 
+import { EthereumProvider } from './ethereumContext/EthereumContext'
 import Navbar from './navbar/Navbar'
 import AddEvent from './addEvent/AddEvent'
 import Footer from './footer/Footer'
 import Events from './events/Events'
-import { EthereumProvider } from './ethereumContext/EthereumContext'
+import CheckTicket from './checkTicket/CheckTicket'
 
 function App() {
   return (
@@ -22,6 +19,7 @@ function App() {
               <Routes>
                 <Route path='/addevent' element={<AddEvent />} />
                 <Route path='/events' element={<Events />} />
+                <Route path='/check' element={<CheckTicket />} />
               </Routes>
             </Box>
             <Box>

@@ -25,8 +25,8 @@ const NetworkDisplay = () => {
           case '5':
             networkName = 'Goerli'
             break
-          case '42':
-            networkName = 'Kovan'
+          case '11155111':
+            networkName = 'Sepolia'
             break
           default:
             networkName = 'Unknown'
