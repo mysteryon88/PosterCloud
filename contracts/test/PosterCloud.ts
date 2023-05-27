@@ -5,7 +5,7 @@ const contractABI = require('./Tickets.json')
 
 describe('PosterCloud', function () {
   async function deployPosterCloudFixture() {
-    const [owner, client1, client2] = await ethers.getSigners()
+    const [owner, client1] = await ethers.getSigners()
 
     const PosterCloud = await ethers.getContractFactory('PosterCloud')
     const posterCloud = await PosterCloud.deploy()
@@ -74,7 +74,7 @@ describe('PosterCloud', function () {
       'EventCreated'
     )
 
-    const event = await posterCloud.getEvent(0)
+    const event = await posterCloud.getEventInfo(0)
 
     const formattedEvent = [
       event[0],
@@ -106,7 +106,7 @@ describe('PosterCloud', function () {
       posterCloud.editEvent(0, 'new name', timestamp, 'new info')
     ).to.emit(posterCloud, 'EventEdited')
 
-    const event = await posterCloud.getEvent(0)
+    const event = await posterCloud.getEventInfo(0)
 
     const formattedEvent = [
       event[0],
@@ -215,6 +215,67 @@ describe('PosterCloud', function () {
     await expect(
       posterCloud.mintTicket(0, 'uri', client1.address)
     ).to.be.revertedWith('Sold out')
+  })
+
+  it('checkTicket', async () => {
+    const { posterCloud, owner, client1, timestamp } = await loadFixture(
+      deployPosterCloudFixture
+    )
+
+    await expect(posterCloud.addEvent('Name', timestamp, 'info', 100)).to.emit(
+      posterCloud,
+      'EventCreated'
+    )
+
+    const contractAddress = await posterCloud.getTicketsFromEvent(0)
+
+    let Tickets = new ethers.Contract(
+      contractAddress,
+      contractABI,
+      ethers.provider
+    )
+
+    await expect(posterCloud.mintTicket(0, 'uri', client1.address)).to.emit(
+      Tickets,
+      'Transfer'
+    )
+
+    const _eventId = 0
+    const _tokenId = 0
+
+    const result = await posterCloud.checkTicket(_eventId, _tokenId)
+    expect(result).to.be.false
+  })
+
+  it('setTicket', async () => {
+    const { posterCloud, owner, client1, timestamp } = await loadFixture(
+      deployPosterCloudFixture
+    )
+
+    await expect(posterCloud.addEvent('Name', timestamp, 'info', 100)).to.emit(
+      posterCloud,
+      'EventCreated'
+    )
+
+    const contractAddress = await posterCloud.getTicketsFromEvent(0)
+
+    let Tickets = new ethers.Contract(
+      contractAddress,
+      contractABI,
+      ethers.provider
+    )
+
+    await expect(posterCloud.mintTicket(0, 'uri', client1.address)).to.emit(
+      Tickets,
+      'Transfer'
+    )
+
+    const _eventId = 0
+    const _tokenId = 0
+
+    await expect(posterCloud.setTicket(_eventId, _tokenId)).to.not.be.reverted
+
+    expect(await posterCloud.checkTicket(_eventId, _tokenId)).to.be.true
   })
 })
 

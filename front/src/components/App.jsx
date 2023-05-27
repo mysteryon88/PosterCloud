@@ -17,6 +17,7 @@ function App() {
             <Box flex='1'>
               <Navbar />
               <Routes>
+                <Route path='/' element={<Events />} />
                 <Route path='/addevent' element={<AddEvent />} />
                 <Route path='/events' element={<Events />} />
                 <Route path='/check' element={<CheckTicket />} />

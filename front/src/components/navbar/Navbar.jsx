@@ -24,15 +24,6 @@ const Navbar = () => {
           {/* Navigation links */}
           <Flex>
             <Link
-              href='/'
-              p={2}
-              mx={2}
-              color='white'
-              _hover={{ textDecoration: 'none' }}
-            >
-              Home
-            </Link>
-            <Link
               href='/events'
               p={2}
               mx={2}

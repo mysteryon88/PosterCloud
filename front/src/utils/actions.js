@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export const addEvent = async (name, timestamp, info, totalTickets) => {
   try {
-    const response = await axios.post(`http://localhost:5000/api/addevent`, {
+    const response = await axios.post(`http://10.0.0.2:5000/api/addevent`, {
       name,
       timestamp,
       info,
@@ -16,7 +16,7 @@ export const addEvent = async (name, timestamp, info, totalTickets) => {
 
 export const handleBuyTicket = async (eventId, addr) => {
   try {
-    const response = await axios.post(`http://localhost:5000/api/buytik`, {
+    const response = await axios.post(`http://10.0.0.2:5000/api/buytik`, {
       eventId,
       addr,
     })
@@ -28,7 +28,7 @@ export const handleBuyTicket = async (eventId, addr) => {
 
 export const checkTicket = async (eventId, ticketId) => {
   try {
-    const response = await axios.post(`http://localhost:5000/api/check`, {
+    const response = await axios.post(`http://10.0.0.2:5000/api/check`, {
       eventId,
       ticketId,
     })
