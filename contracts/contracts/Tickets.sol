@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 
 contract Tickets is ERC721, ERC721URIStorage, ERC721Burnable {
-    uint256 private ids;
+    uint256 private currentId;
     uint256 private total;
     address private owner;
     mapping(uint256 => bool) verifier;
@@ -21,8 +21,13 @@ contract Tickets is ERC721, ERC721URIStorage, ERC721Burnable {
         _;
     }
 
+    modifier validEventId(uint256 tokenId) {
+        require(tokenId < currentId, "Token ID out of range");
+        _;
+    }
+
     function safeMint(address to, string memory uri) public onlyOwner {
-        uint256 tokenId = ids++;
+        uint256 tokenId = currentId++;
         require(total > tokenId, "Sold out");
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
@@ -51,11 +56,11 @@ contract Tickets is ERC721, ERC721URIStorage, ERC721Burnable {
         return super.tokenURI(tokenId);
     }
 
-    function checkTicket(uint256 tokenId) public view onlyOwner returns (bool) {
+    function checkTicket(uint256 tokenId) public view onlyOwner validEventId(tokenId) returns (bool) {
         return verifier[tokenId];
     }
 
-    function setTicket(uint256 tokenId) public onlyOwner {
+    function setTicket(uint256 tokenId) public onlyOwner validEventId(tokenId){
         verifier[tokenId] = true;
     }
 }
