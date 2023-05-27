@@ -11,8 +11,6 @@ app.use('/api', router)
 
 const start = () => {
   try {
-    let i = 42 // Замените 0 на ваше число
-    console.log(computeHash(i))
     app.listen(process.env.PORT, () => {
       console.log('Server started on port ', process.env.PORT)
     })

@@ -20,10 +20,7 @@ contract PosterCloud {
         address nftAddress,
         uint256 blockTimestamp
     );
-    event EventEdited(
-        uint256 indexed eventId,
-        uint256 blockTimestamp
-    );
+    event EventEdited(uint256 indexed eventId, uint256 blockTimestamp);
     event EventDeleted(uint256 indexed eventId, uint256 blockTimestamp);
 
     constructor() {
@@ -110,7 +107,7 @@ contract PosterCloud {
         return events.length;
     }
 
-    function getEvent(
+    function getEventInfo(
         uint256 _eventId
     )
         public
@@ -129,13 +126,24 @@ contract PosterCloud {
 
     function getTicketsFromEvent(
         uint256 _eventId
-    )
-        public
-        view
-        validEventId(_eventId)
-        returns (address)
-    {
+    ) public view validEventId(_eventId) returns (address) {
         Event storage eventToGet = events[_eventId];
         return eventToGet.nftAddress;
+    }
+
+    function checkTicket(
+        uint256 _eventId,
+        uint256 _tockenId
+    ) public view validEventId(_eventId) returns (bool) {
+        Event storage eventToCheck = events[_eventId];
+        return Tickets(eventToCheck.nftAddress).checkTicket(_tockenId);
+    }
+
+    function setTicket(
+        uint256 _eventId,
+        uint256 _tockenId
+    ) public onlyOwner validEventId(_eventId) {
+        Event storage eventToSet = events[_eventId];
+        Tickets(eventToSet.nftAddress).setTicket(_tockenId);
     }
 }

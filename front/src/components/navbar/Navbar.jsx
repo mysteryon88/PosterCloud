@@ -9,7 +9,7 @@ import {
   Link,
 } from '@chakra-ui/react'
 import { SunIcon, MoonIcon } from '@chakra-ui/icons'
-import ConnectWallet from '../wallet/ConnectWallet'
+import ConnectWallet from '../connectWallet/ConnectWallet'
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -33,7 +33,7 @@ const Navbar = () => {
               Home
             </Link>
             <Link
-              href='/about'
+              href='/events'
               p={2}
               mx={2}
               color='white'
