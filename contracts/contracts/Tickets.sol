@@ -56,11 +56,13 @@ contract Tickets is ERC721, ERC721URIStorage, ERC721Burnable {
         return super.tokenURI(tokenId);
     }
 
-    function checkTicket(uint256 tokenId) public view onlyOwner validEventId(tokenId) returns (bool) {
+    function checkTicket(
+        uint256 tokenId
+    ) public view onlyOwner validEventId(tokenId) returns (bool) {
         return verifier[tokenId];
     }
 
-    function setTicket(uint256 tokenId) public onlyOwner validEventId(tokenId){
+    function setTicket(uint256 tokenId) public onlyOwner validEventId(tokenId) {
         verifier[tokenId] = true;
     }
 }

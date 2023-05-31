@@ -6,7 +6,6 @@ import "./Tickets.sol";
 //https://sepolia.etherscan.io/address/0x2088A990D6A8c42A953F78bBd276d83775b61d5b
 //http://localhost:3000/check?eventid=123&ticketid=456
 
-
 contract PosterCloud {
     struct Event {
         string name;

@@ -49,7 +49,13 @@ router.post('/buytik', async (req, res) => {
     const { eventId, addr } = req.body
     console.log(eventId, addr)
     try {
-      const tx = await contract.connect(wallet).mintTicket(eventId, 'uri', addr)
+      const tx = await contract
+        .connect(wallet)
+        .mintTicket(
+          eventId,
+          'ipfs://QmajiHJ4N1horTkYg8Me2kjMhCQXqeqzARKmCj9zX4RzDp',
+          addr
+        )
 
       const receipt = await tx.wait()
       console.log('Transaction was successful:', receipt)
